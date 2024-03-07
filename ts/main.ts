@@ -55,6 +55,20 @@ const $form = document.getElementById('searchForm') as HTMLFormElement;
 if (!$form) {
   throw new Error('$form query failed');
 }
+const $landingPage = document.querySelector(
+  'div[data-landing-page="landingPage"]',
+) as HTMLDivElement;
+
+const $entitiesView = document.querySelector(
+  'div[data-top-rated="entitiesView"]',
+) as HTMLDivElement;
+
+const $businessIntro = document.querySelector(
+  '.businessIntro',
+) as HTMLDivElement;
+if (!$landingPage || !$entitiesView || !$businessIntro) {
+  throw new Error('$landingPage, $entitiesView or $businessIntro query failed');
+}
 $form.addEventListener('submit', async (event: Event) => {
   event.preventDefault();
   const $ulElement = document.getElementById('myList') as HTMLUListElement;
@@ -63,7 +77,7 @@ $form.addEventListener('submit', async (event: Event) => {
   }
   const $formElements = $form.elements as FormElements;
   const $input = $formElements.cityInput;
-  const inputValue = $input.value;
+  let inputValue = $input.value;
   const targetUrl = encodeURIComponent(
     `https://api.yelp.com/v3/businesses/search?location=${inputValue}&term=food&sort_by=rating`,
   );
@@ -76,26 +90,24 @@ $form.addEventListener('submit', async (event: Event) => {
     const $liElement = createLiElement(imageUrl, businessName, businessRating);
 
     $ulElement.append($liElement);
+    $form.reset();
   }
-  const $landingPage = document.querySelector(
-    'div[data-landing-page="landingPage"]',
-  ) as HTMLDivElement;
 
-  const $entitiesView = document.querySelector(
-    'div[data-top-rated="entitiesView"]',
-  ) as HTMLDivElement;
-
-  const $businessIntro = document.querySelector(
-    '.businessIntro',
-  ) as HTMLDivElement;
-  if (!$landingPage || !$entitiesView || !$businessIntro) {
-    throw new Error(
-      '$landingPage, $entitiesView or $businessIntro query failed',
-    );
-  }
   $landingPage.style.display = 'none';
   $entitiesView.style.display = 'block';
+  inputValue =
+    inputValue.charAt(0).toUpperCase() +
+    inputValue.slice(1).toLocaleLowerCase();
   $businessIntro.textContent = `Restaurants in ${inputValue}`;
+});
+
+const $logo = document.querySelector('.logo') as HTMLDivElement;
+if (!$logo) {
+  throw new Error('$logo query failed');
+}
+$logo.addEventListener('click', () => {
+  $landingPage.style.display = 'block';
+  $entitiesView.style.display = 'none';
 });
 
 const $sortByRatedOrViewed = document.getElementById(

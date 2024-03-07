@@ -33,7 +33,6 @@ header img {
 .container {
   width: 90%;
   margin: 0 auto;
-  border: 1px solid black;
 }
 
 .row {
@@ -92,12 +91,16 @@ div[data-top-rated='entitiesView'] {
 .searchForm .cityInput {
   border: 1px solid black;
   border-radius: 16px;
-  min-width: 100px;
-  max-width: 350px;
+  width: 38%;
+  height: 52px;
 }
 
 .searchForm .searchButton {
   border-radius: 7px;
+}
+
+.myList li {
+  padding-bottom: 18px;
 }
 
 @media screen and (width >= 756px) {

@@ -45,6 +45,16 @@ const $form = document.getElementById('searchForm');
 if (!$form) {
   throw new Error('$form query failed');
 }
+const $landingPage = document.querySelector(
+  'div[data-landing-page="landingPage"]',
+);
+const $entitiesView = document.querySelector(
+  'div[data-top-rated="entitiesView"]',
+);
+const $businessIntro = document.querySelector('.businessIntro');
+if (!$landingPage || !$entitiesView || !$businessIntro) {
+  throw new Error('$landingPage, $entitiesView or $businessIntro query failed');
+}
 $form.addEventListener('submit', async (event) => {
   event.preventDefault();
   const $ulElement = document.getElementById('myList');
@@ -53,7 +63,7 @@ $form.addEventListener('submit', async (event) => {
   }
   const $formElements = $form.elements;
   const $input = $formElements.cityInput;
-  const inputValue = $input.value;
+  let inputValue = $input.value;
   const targetUrl = encodeURIComponent(
     `https://api.yelp.com/v3/businesses/search?location=${inputValue}&term=food&sort_by=rating`,
   );
@@ -65,22 +75,22 @@ $form.addEventListener('submit', async (event) => {
     const businessRating = businessEntity.rating;
     const $liElement = createLiElement(imageUrl, businessName, businessRating);
     $ulElement.append($liElement);
-  }
-  const $landingPage = document.querySelector(
-    'div[data-landing-page="landingPage"]',
-  );
-  const $entitiesView = document.querySelector(
-    'div[data-top-rated="entitiesView"]',
-  );
-  const $businessIntro = document.querySelector('.businessIntro');
-  if (!$landingPage || !$entitiesView || !$businessIntro) {
-    throw new Error(
-      '$landingPage, $entitiesView or $businessIntro query failed',
-    );
+    $form.reset();
   }
   $landingPage.style.display = 'none';
   $entitiesView.style.display = 'block';
+  inputValue =
+    inputValue.charAt(0).toUpperCase() +
+    inputValue.slice(1).toLocaleLowerCase();
   $businessIntro.textContent = `Restaurants in ${inputValue}`;
+});
+const $logo = document.querySelector('.logo');
+if (!$logo) {
+  throw new Error('$logo query failed');
+}
+$logo.addEventListener('click', () => {
+  $landingPage.style.display = 'block';
+  $entitiesView.style.display = 'none';
 });
 const $sortByRatedOrViewed = document.getElementById('ratedOrViewed');
 if (!$sortByRatedOrViewed) {
@@ -109,7 +119,7 @@ $sortByRatedOrViewed.addEventListener('change', async () => {
       $ulElement.append($liElement);
     }
   } else if (sortBy === 'topViewed') {
-    const businesses = await getRequest(location1);
+    /*     const businesses = await getRequest(location1); */
     console.log('top viewed restaurant will be displayed here');
   }
 });
