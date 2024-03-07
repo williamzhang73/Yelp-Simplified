@@ -1,20 +1,64 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AJAX Project</title>
-  <link rel="icon" href="images/favicon.ico">
-  <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-  <header>
-  </header>
-  <main>
-  </main>
-  <script src="js/data.js"></script>
-  <script src="js/main.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AJAX Project</title>
+    <link rel="icon" href="images/favicon.ico" />
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header">
+        <div class="logo">
+          <h1>Yelp Simplified</h1>
+          <img src="images/image.png" alt="log" />
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <div data-top-rated="topRated">
+          <div class="row">
+            <div class="searchBar column-full">
+              <div>Top Rated</div>
+              <div>
+                <select id="location" name="location">
+                  <!-- <option value="chino" selected>Chino</option>
+                  <option value="chino hills">Chino hills</option>
+                  <option value="irvine">Irvine</option> -->
+                </select>
+              </div>
+              <div>
+                <select id="ratedOrViewed" name="ratedOrViewed">
+                  <option value="topRated">Top Rated</option>
+                  <option value="topViewed">Top Viewed</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="column-full">
+              <ul class="myList">
+                <li>
+                  <div class="businessEntity">
+                    <div class="column-full column-half">
+                      <img src="images/test.png" alt="test" />
+                    </div>
+                    <div class="column-full column-half">
+                      <h2>The Stand - American Classics Redefined</h2>
+                      <p>rating: 4.6</p>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+  </body>
 </html>

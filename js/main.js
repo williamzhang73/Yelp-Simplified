@@ -1,31 +1,21 @@
+'use strict';
 /* async function fetchBusiness(location) {
 
 } */
-
-function createOptions(text: string): HTMLOptionElement {
-  const $option = document.createElement('option') as HTMLOptionElement;
+function createOptions(text) {
+  const $option = document.createElement('option');
   $option.value = text;
   $option.textContent = text;
   /*   $option.selected = true; */
   return $option;
 }
-
-const locationArray: string[] = ['Chino', 'Chino Hills', 'Irvine'];
-
-const $locationSelector = document.getElementById(
-  'location',
-) as HTMLSelectElement;
-
+const locationArray = ['Chino', 'Chino Hills', 'Irvine'];
+const $locationSelector = document.getElementById('location');
 /* console.log('$locationSelector: ', $locationSelector); */
-
-const $sortByRatedOrViewed = document.getElementById(
-  'ratedOrViewed',
-) as HTMLSelectElement;
-
+const $sortByRatedOrViewed = document.getElementById('ratedOrViewed');
 if (!$locationSelector || !$sortByRatedOrViewed) {
   throw new Error('$locationSelector or $sortByRatedOrViewed query failed');
 }
-
 for (let i = 0; i < locationArray.length; i++) {
   const $option = createOptions(locationArray[i]);
   $locationSelector.append($option);
@@ -34,20 +24,17 @@ for (let i = 0; i < locationArray.length; i++) {
   '#location option',
 ) as NodeListOf<HTMLOptionElement>; */
 /* $options[0].selected = true; */
-
 /* const textContent=$locationSelector.textContent;
 console.log("textContent; ", textContent); */
 let location1 = 'Chino';
-async function resolvedOption(): Promise<string> {
+async function resolvedOption() {
   return $locationSelector.selectedOptions[0].text;
 }
 $locationSelector.addEventListener('click', async () => {
   location1 = await resolvedOption();
 });
-
 $sortByRatedOrViewed.addEventListener('change', async () => {
   /*   const $eventTarget = event.target; */
-
   const sortBy = $sortByRatedOrViewed.selectedOptions[0].value;
   /*  console.log("eventTarget: ", sortBy);   */
   if (sortBy === 'topRated') {
@@ -58,11 +45,9 @@ $sortByRatedOrViewed.addEventListener('change', async () => {
     console.log('business: ', businesses);
   }
 });
-
 const apiKey =
   'PFI4az7sB4tUQKWVne-hKBAO_XQ22IouMx4zpOiFSrgEo0H6KZG6ktXa9goetNurD52ebqnYtYOffXVRYaXbITx_KAzZGPElZrHyOJnKbrfO9BKontBsKsrlOivmZXYx';
-
-async function getRequest(location: string, value: string): Promise<any> {
+async function getRequest(location, value) {
   try {
     const targetUrl = encodeURIComponent(
       `https://api.yelp.com/v3/businesses/search?location=${location}&term=food&sort_by=${value}`,
