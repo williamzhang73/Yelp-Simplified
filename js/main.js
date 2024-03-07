@@ -1,10 +1,7 @@
-interface FormElements extends HTMLFormControlsCollection {
-  cityInput: HTMLInputElement;
-}
+'use strict';
 const apiKey =
   'PFI4az7sB4tUQKWVne-hKBAO_XQ22IouMx4zpOiFSrgEo0H6KZG6ktXa9goetNurD52ebqnYtYOffXVRYaXbITx_KAzZGPElZrHyOJnKbrfO9BKontBsKsrlOivmZXYx';
-
-async function getRequest(targetUrl: string): Promise<any> {
+async function getRequest(targetUrl) {
   try {
     const response = await fetch(
       `https://lfz-cors.herokuapp.com/?url=${targetUrl}`,
@@ -21,27 +18,21 @@ async function getRequest(targetUrl: string): Promise<any> {
     throw new Error('ThrowError: data fetch failed.');
   }
 }
-
-function createLiElement(
-  imageUrl: string,
-  name: string,
-  value: string,
-): HTMLLIElement {
-  const $li = document.createElement('li') as HTMLLIElement;
-  const $div1 = document.createElement('div') as HTMLDivElement;
+function createLiElement(imageUrl, name, value) {
+  const $li = document.createElement('li');
+  const $div1 = document.createElement('div');
   $div1.className = 'businessEntity';
-  const $div2 = document.createElement('div') as HTMLDivElement;
+  const $div2 = document.createElement('div');
   $div2.className = 'column-full column-half';
-  const $img = document.createElement('img') as HTMLImageElement;
+  const $img = document.createElement('img');
   $img.src = imageUrl;
   $img.alt = 'business image';
-  const $div3 = document.createElement('div') as HTMLDivElement;
+  const $div3 = document.createElement('div');
   $div3.className = 'column-full column-half';
   const $h2 = document.createElement('h2');
   $h2.textContent = name;
   const $p = document.createElement('p');
   $p.textContent = `rating: ${value}`;
-
   $li.append($div1);
   $div1.append($div2);
   $div1.append($div3);
@@ -50,32 +41,27 @@ function createLiElement(
   $div3.append($p);
   return $li;
 }
-
-const $form = document.getElementById('searchForm') as HTMLFormElement;
+const $form = document.getElementById('searchForm');
 if (!$form) {
   throw new Error('$form query failed');
 }
 const $landingPage = document.querySelector(
   'div[data-landing-page="landingPage"]',
-) as HTMLDivElement;
-
+);
 const $entitiesView = document.querySelector(
   'div[data-top-rated="entitiesView"]',
-) as HTMLDivElement;
-
-const $businessIntro = document.querySelector(
-  '.businessIntro',
-) as HTMLDivElement;
+);
+const $businessIntro = document.querySelector('.businessIntro');
 if (!$landingPage || !$entitiesView || !$businessIntro) {
   throw new Error('$landingPage, $entitiesView or $businessIntro query failed');
 }
-$form.addEventListener('submit', async (event: Event) => {
+$form.addEventListener('submit', async (event) => {
   event.preventDefault();
-  const $ulElement = document.getElementById('myList') as HTMLUListElement;
+  const $ulElement = document.getElementById('myList');
   if (!$ulElement) {
     throw new Error('$ulElement query failed');
   }
-  const $formElements = $form.elements as FormElements;
+  const $formElements = $form.elements;
   const $input = $formElements.cityInput;
   let inputValue = $input.value;
   const targetUrl = encodeURIComponent(
@@ -88,11 +74,9 @@ $form.addEventListener('submit', async (event: Event) => {
     const businessName = businessEntity.name;
     const businessRating = businessEntity.rating;
     const $liElement = createLiElement(imageUrl, businessName, businessRating);
-
     $ulElement.append($liElement);
     $form.reset();
   }
-
   $landingPage.style.display = 'none';
   $entitiesView.style.display = 'block';
   inputValue =
@@ -100,8 +84,7 @@ $form.addEventListener('submit', async (event: Event) => {
     inputValue.slice(1).toLocaleLowerCase();
   $businessIntro.textContent = `Restaurants in ${inputValue}`;
 });
-
-const $logo = document.querySelector('.logo') as HTMLDivElement;
+const $logo = document.querySelector('.logo');
 if (!$logo) {
   throw new Error('$logo query failed');
 }
@@ -109,18 +92,13 @@ $logo.addEventListener('click', () => {
   $landingPage.style.display = 'block';
   $entitiesView.style.display = 'none';
 });
-
-const $sortByRatedOrViewed = document.getElementById(
-  'ratedOrViewed',
-) as HTMLSelectElement;
-
+const $sortByRatedOrViewed = document.getElementById('ratedOrViewed');
 if (!$sortByRatedOrViewed) {
   throw new Error('$locationSelector or $sortByRatedOrViewed query failed');
 }
-
 const location1 = 'Chino';
 $sortByRatedOrViewed.addEventListener('change', async () => {
-  const $ulElement = document.getElementById('myList') as HTMLUListElement;
+  const $ulElement = document.getElementById('myList');
   if (!$ulElement) {
     throw new Error('$ulElement query failed');
   }
@@ -130,7 +108,6 @@ $sortByRatedOrViewed.addEventListener('change', async () => {
     console.log('businesses: ', businesses);
     for (let i = 0; i < businesses.length; i++) {
       const businessEntity = businesses[i];
-
       const imageUrl = businessEntity.image_url;
       const businessName = businessEntity.name;
       const businessRating = businessEntity.rating;

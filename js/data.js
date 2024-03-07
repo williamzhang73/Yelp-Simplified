@@ -1,3 +1,4 @@
+'use strict';
 /* exported data */
 /* interface Data {
   view: string;
@@ -5,7 +6,6 @@
   nextReviewId: number;
   editing: null | any;
 } */
-
 /* const data: Data = {
   view: '',
   reviews: [],
