@@ -98,8 +98,6 @@ $form.addEventListener('submit', async (event: Event) => {
     `https://api.yelp.com/v3/businesses/search?location=${inputValue}&term=food&sort_by=review_count`,
   );
   businessesRating = await getRequest(ratingUrl);
-
-  /*  console.log("businessRating: ", businessesRating); */
   businessesCount = await getRequest(countUrl);
   const $ulRated = document.createElement('ul') as HTMLUListElement;
 
@@ -137,7 +135,6 @@ if (!$sortByRatedOrViewed) {
   throw new Error('$sortByRatedOrViewed query failed');
 }
 
-/* const location1 = 'Chino'; */
 $sortByRatedOrViewed.addEventListener('change', async () => {
   const sortBy = $sortByRatedOrViewed.selectedOptions[0].value;
   if (sortBy === 'topRated') {
