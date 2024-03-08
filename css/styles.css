@@ -61,11 +61,17 @@ header img {
   padding-right: 3%;
 }
 
+div[data-top-rated='entitiesView'] ul img {
+  width: 100%;
+  height: 254px;
+  object-fit: cover;
+}
+
 .container .businessEntity img {
   width: 100%;
 }
 
-.myList {
+ul {
   list-style-type: none;
 }
 
@@ -99,7 +105,7 @@ div[data-top-rated='entitiesView'] {
   border-radius: 7px;
 }
 
-.myList li {
+li {
   padding-bottom: 18px;
 }
 

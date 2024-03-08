@@ -18,7 +18,7 @@ async function getRequest(targetUrl) {
     throw new Error('ThrowError: data fetch failed.');
   }
 }
-function createLiElement(imageUrl, name, value) {
+function createLiElement(tag, imageUrl, name, value) {
   const $li = document.createElement('li');
   const $div1 = document.createElement('div');
   $div1.className = 'businessEntity';
@@ -32,7 +32,11 @@ function createLiElement(imageUrl, name, value) {
   const $h2 = document.createElement('h2');
   $h2.textContent = name;
   const $p = document.createElement('p');
-  $p.textContent = `rating: ${value}`;
+  if (tag === 1) {
+    $p.textContent = `rating: ${value}`;
+  } else if (tag === 2) {
+    $p.textContent = `viewed: ${value}`;
+  }
   $li.append($div1);
   $div1.append($div2);
   $div1.append($div3);
@@ -45,6 +49,10 @@ const $form = document.getElementById('searchForm');
 if (!$form) {
   throw new Error('$form query failed');
 }
+const $myListView = document.getElementById('myListView');
+if (!$myListView) {
+  throw new Error('$myListView query failed');
+}
 const $landingPage = document.querySelector(
   'div[data-landing-page="landingPage"]',
 );
@@ -55,28 +63,37 @@ const $businessIntro = document.querySelector('.businessIntro');
 if (!$landingPage || !$entitiesView || !$businessIntro) {
   throw new Error('$landingPage, $entitiesView or $businessIntro query failed');
 }
+const $ulElement = document.getElementById('myList');
+if (!$ulElement) {
+  throw new Error('$ulElement query failed');
+}
+let businessesRating = [];
+let businessesCount = [];
 $form.addEventListener('submit', async (event) => {
   event.preventDefault();
-  const $ulElement = document.getElementById('myList');
-  if (!$ulElement) {
-    throw new Error('$ulElement query failed');
-  }
   const $formElements = $form.elements;
   const $input = $formElements.cityInput;
   let inputValue = $input.value;
-  const targetUrl = encodeURIComponent(
+  const ratingUrl = encodeURIComponent(
     `https://api.yelp.com/v3/businesses/search?location=${inputValue}&term=food&sort_by=rating`,
   );
-  const businesses = await getRequest(targetUrl);
-  for (let i = 0; i < businesses.length; i++) {
-    const businessEntity = businesses[i];
+  const countUrl = encodeURIComponent(
+    `https://api.yelp.com/v3/businesses/search?location=${inputValue}&term=food&sort_by=review_count`,
+  );
+  businessesRating = await getRequest(ratingUrl);
+  /*  console.log("businessRating: ", businessesRating); */
+  businessesCount = await getRequest(countUrl);
+  const $ulRated = document.createElement('ul');
+  for (let i = 0; i < businessesRating.length; i++) {
+    const businessEntity = businessesRating[i];
     const imageUrl = businessEntity.image_url;
     const businessName = businessEntity.name;
-    const businessRating = businessEntity.rating;
-    const $liElement = createLiElement(imageUrl, businessName, businessRating);
-    $ulElement.append($liElement);
-    $form.reset();
+    const reviewCount = businessEntity.review_count;
+    const $liElement = createLiElement(1, imageUrl, businessName, reviewCount);
+    $ulRated.append($liElement);
   }
+  $myListView.replaceChildren($ulRated);
+  $form.reset();
   $landingPage.style.display = 'none';
   $entitiesView.style.display = 'block';
   inputValue =
@@ -94,32 +111,46 @@ $logo.addEventListener('click', () => {
 });
 const $sortByRatedOrViewed = document.getElementById('ratedOrViewed');
 if (!$sortByRatedOrViewed) {
-  throw new Error('$locationSelector or $sortByRatedOrViewed query failed');
+  throw new Error('$sortByRatedOrViewed query failed');
 }
-const location1 = 'Chino';
+/* const location1 = 'Chino'; */
 $sortByRatedOrViewed.addEventListener('change', async () => {
-  const $ulElement = document.getElementById('myList');
-  if (!$ulElement) {
-    throw new Error('$ulElement query failed');
-  }
   const sortBy = $sortByRatedOrViewed.selectedOptions[0].value;
   if (sortBy === 'topRated') {
-    const businesses = await getRequest(location1);
-    console.log('businesses: ', businesses);
-    for (let i = 0; i < businesses.length; i++) {
-      const businessEntity = businesses[i];
+    $landingPage.style.display = 'none';
+    $entitiesView.style.display = 'block';
+    const $ulRated = document.createElement('ul');
+    for (let i = 0; i < businessesRating.length; i++) {
+      const businessEntity = businessesRating[i];
       const imageUrl = businessEntity.image_url;
       const businessName = businessEntity.name;
-      const businessRating = businessEntity.rating;
+      const reviewCount = businessEntity.review_count;
       const $liElement = createLiElement(
+        1,
         imageUrl,
         businessName,
-        businessRating,
+        reviewCount,
       );
-      $ulElement.append($liElement);
+      $ulRated.append($liElement);
     }
+    $myListView.replaceChildren($ulRated);
   } else if (sortBy === 'topViewed') {
-    /*     const businesses = await getRequest(location1); */
-    console.log('top viewed restaurant will be displayed here');
+    $landingPage.style.display = 'none';
+    $entitiesView.style.display = 'block';
+    const $ulCount = document.createElement('ul');
+    for (let i = 0; i < businessesCount.length; i++) {
+      const businessEntity = businessesCount[i];
+      const imageUrl = businessEntity.image_url;
+      const businessName = businessEntity.name;
+      const reviewCount = businessEntity.review_count;
+      const $liElement = createLiElement(
+        2,
+        imageUrl,
+        businessName,
+        reviewCount,
+      );
+      $ulCount.append($liElement);
+    }
+    $myListView.replaceChildren($ulCount);
   }
 });
