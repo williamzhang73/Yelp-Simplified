@@ -21,12 +21,89 @@ async function getRequest(targetUrl: string): Promise<any> {
     throw new Error('ThrowError: data fetch failed.');
   }
 }
+interface Entity {
+  url: string;
+  name: string;
+  rating: string;
+  review: string;
+  address: string;
+  phone: string;
+  isClosed: string;
+  delivery: string;
+}
+function createEntity(entity: Entity, index: number, tag: string): HTMLElement {
+  const $divEntity = document.createElement('div') as HTMLDivElement;
+  $divEntity.className = 'row';
+  const $divImage = document.createElement('div') as HTMLDivElement;
+  $divImage.className = 'column-full column-half';
+  const $img = document.createElement('img') as HTMLImageElement;
+  $img.src = entity.url;
+  $img.alt = 'business image';
+  const $divDetails = document.createElement('div') as HTMLDivElement;
+  $divDetails.className = 'business-detail column-full column-half';
+
+  const $divName = document.createElement('div') as HTMLDivElement;
+  $divName.textContent = `${entity.name}`;
+  $divName.className = 'business-name';
+  const $divRating = document.createElement('div') as HTMLDivElement;
+  $divRating.textContent = `Rating: ${entity.rating}`;
+  const $divReview = document.createElement('div') as HTMLDivElement;
+  $divReview.textContent = `Review counts: ${entity.review}`;
+  const $divAddress = document.createElement('div') as HTMLDivElement;
+  $divAddress.textContent = `Address: ${entity.address}`;
+  const $divPhone = document.createElement('div') as HTMLDivElement;
+  $divPhone.textContent = `Phone: ${entity.phone}`;
+  const $divIsClosed = document.createElement('div') as HTMLDivElement;
+  $divIsClosed.textContent =
+    entity.isClosed === 'false' ? 'Status: closed' : 'Status: open';
+  const $divDelivery = document.createElement('div') as HTMLDivElement;
+  $divDelivery.textContent = `Delivery: ${entity.delivery}`;
+
+  const $divButton = document.createElement('div') as HTMLDivElement;
+  $divButton.className = 'column-full';
+  const $button = document.createElement('button') as HTMLButtonElement;
+  $divButton.id = 'add-reviews';
+  $button.textContent = 'Add Reviews';
+  $button.dataset.index = index.toString();
+  $button.dataset.tag = tag;
+
+  $divButton.append($button);
+  $divImage.append($img);
+  $divEntity.append($divImage, $divDetails, $divButton);
+  $divDetails.append(
+    $divName,
+    $divRating,
+    $divReview,
+    $divAddress,
+    $divPhone,
+    $divIsClosed,
+    $divDelivery,
+  );
+  return $divEntity;
+}
+
+/* function createSelectElement(): HTMLSelectElement {
+  const $select = document.createElement('select') as HTMLSelectElement;
+  $select.id = 'ratedOrViewed';
+  $select.name = 'ratedOrViewed';
+  const $option1 = document.createElement('option') as HTMLOptionElement;
+  $option1.value = 'topRated';
+  $option1.selected = true;
+  $option1.textContent = 'Top Rated';
+  const $option2 = document.createElement('option') as HTMLOptionElement;
+  $option2.value = 'topViewed';
+  $option2.textContent = 'Top viewed';
+
+  $select.append($option1, $option2);
+  return $select;
+} */
 
 function createLiElement(
   tag: number,
   imageUrl: string,
   name: string,
   value: string,
+  index: number,
 ): HTMLLIElement {
   const $li = document.createElement('li') as HTMLLIElement;
   const $div1 = document.createElement('div') as HTMLDivElement;
@@ -36,6 +113,8 @@ function createLiElement(
   const $img = document.createElement('img') as HTMLImageElement;
   $img.src = imageUrl;
   $img.alt = 'business image';
+  $img.dataset.index = index.toString();
+  $img.dataset.tag = tag.toString();
   const $div3 = document.createElement('div') as HTMLDivElement;
   $div3.className = 'column-full column-half';
   const $h2 = document.createElement('h2');
@@ -78,16 +157,18 @@ const $businessIntro = document.querySelector(
 if (!$landingPage || !$entitiesView || !$businessIntro) {
   throw new Error('$landingPage, $entitiesView or $businessIntro query failed');
 }
-const $ulElement = document.getElementById('myList') as HTMLUListElement;
-if (!$ulElement) {
-  throw new Error('$ulElement query failed');
+
+const $selectParent = document.getElementById(
+  'rated-or-viewed',
+) as HTMLDivElement;
+if (!$selectParent) {
+  throw new Error('$selectParent query failed');
 }
 
 let businessesRating: any[] = [];
 let businessesCount: any[] = [];
 $form.addEventListener('submit', async (event: Event) => {
   event.preventDefault();
-
   const $formElements = $form.elements as FormElements;
   const $input = $formElements.cityInput;
   let inputValue = $input.value;
@@ -105,8 +186,15 @@ $form.addEventListener('submit', async (event: Event) => {
     const businessEntity = businessesRating[i];
     const imageUrl = businessEntity.image_url;
     const businessName = businessEntity.name;
-    const reviewCount = businessEntity.review_count;
-    const $liElement = createLiElement(1, imageUrl, businessName, reviewCount);
+    const rating = businessEntity.rating;
+    const index = i;
+    const $liElement = createLiElement(
+      1,
+      imageUrl,
+      businessName,
+      rating,
+      index,
+    );
     $ulRated.append($liElement);
   }
   $myListView.replaceChildren($ulRated);
@@ -126,6 +214,8 @@ if (!$logo) {
 $logo.addEventListener('click', () => {
   $landingPage.style.display = 'block';
   $entitiesView.style.display = 'none';
+  $businessProfile.style.display = 'none';
+  $addReviewsPage.style.display = 'none';
 });
 
 const $sortByRatedOrViewed = document.getElementById(
@@ -134,46 +224,141 @@ const $sortByRatedOrViewed = document.getElementById(
 if (!$sortByRatedOrViewed) {
   throw new Error('$sortByRatedOrViewed query failed');
 }
+function appendLi(tag: number, businesses: any): void {
+  $landingPage.style.display = 'none';
+  $entitiesView.style.display = 'block';
+  const $ulRated = document.createElement('ul') as HTMLUListElement;
+
+  for (let i = 0; i < businesses.length; i++) {
+    const businessEntity = businesses[i];
+    const imageUrl = businessEntity.image_url;
+    const businessName = businessEntity.name;
+    const ratingOrCount =
+      tag === 1 ? businessEntity.rating : businessEntity.review_count;
+    /*     console.log('business Rating: ', businessEntity.rating); */
+    const index = i;
+    const $liElement = createLiElement(
+      tag,
+      imageUrl,
+      businessName,
+      ratingOrCount,
+      index,
+    );
+    $ulRated.append($liElement);
+  }
+  $myListView.replaceChildren($ulRated);
+}
 
 $sortByRatedOrViewed.addEventListener('change', async () => {
   const sortBy = $sortByRatedOrViewed.selectedOptions[0].value;
   if (sortBy === 'topRated') {
-    $landingPage.style.display = 'none';
-    $entitiesView.style.display = 'block';
-    const $ulRated = document.createElement('ul') as HTMLUListElement;
-
-    for (let i = 0; i < businessesRating.length; i++) {
-      const businessEntity = businessesRating[i];
-      const imageUrl = businessEntity.image_url;
-      const businessName = businessEntity.name;
-      const reviewCount = businessEntity.review_count;
-      const $liElement = createLiElement(
-        1,
-        imageUrl,
-        businessName,
-        reviewCount,
-      );
-      $ulRated.append($liElement);
-    }
-    $myListView.replaceChildren($ulRated);
+    appendLi(1, businessesRating);
   } else if (sortBy === 'topViewed') {
-    $landingPage.style.display = 'none';
-    $entitiesView.style.display = 'block';
-    const $ulCount = document.createElement('ul') as HTMLUListElement;
+    appendLi(2, businessesCount);
+  }
+});
 
-    for (let i = 0; i < businessesCount.length; i++) {
-      const businessEntity = businessesCount[i];
-      const imageUrl = businessEntity.image_url;
-      const businessName = businessEntity.name;
-      const reviewCount = businessEntity.review_count;
-      const $liElement = createLiElement(
-        2,
-        imageUrl,
-        businessName,
-        reviewCount,
-      );
-      $ulCount.append($liElement);
+const $ul = document.getElementById('myListView') as HTMLUListElement;
+if (!$ul) {
+  throw new Error('$ul query failed');
+}
+
+const $businessProfile = document.querySelector(
+  'div[data-business-profile="businessProfile"]',
+) as HTMLDivElement;
+if (!$businessProfile) {
+  throw new Error('$businessProfile query failed');
+}
+
+const $businessTitle = document.querySelector(
+  "div[data-business-profile='businessProfile'] .title",
+) as HTMLDivElement;
+if (!$businessTitle) {
+  throw new Error('$businessTitle query failed');
+}
+
+function entityFunction(businessEntity: any): Entity {
+  const businessAddress = businessEntity.location.display_address;
+  let address = '';
+  for (let i = 0; i < businessAddress.length; i++) {
+    address += businessAddress[i];
+  }
+  return {
+    url: businessEntity.image_url,
+    name: businessEntity.name,
+    rating: businessEntity.rating,
+    review: businessEntity.review_count,
+    phone: businessEntity.phone,
+    isClosed: businessEntity.isClosed,
+    address,
+    delivery: businessEntity.transactions.includes('delivery') ? 'Yes' : 'No',
+  };
+}
+function entitySwitchFunction(
+  businesses: any,
+  index: number,
+  tag: string,
+): void {
+  const businessEntity = businesses[index];
+  const entity = entityFunction(businessEntity);
+  const $divEntity = createEntity(entity, index, tag);
+  $businessProfile.replaceChildren($divEntity);
+  $businessProfile.prepend($businessTitle);
+}
+$ul.addEventListener('click', (event: Event) => {
+  const $eventTarget = event.target as HTMLElement;
+  if ($eventTarget.matches('img')) {
+    $landingPage.style.display = 'none';
+    $entitiesView.style.display = 'none';
+    $businessProfile.style.display = 'block';
+    const index = Number($eventTarget.dataset.index);
+    const tag = $eventTarget.dataset.tag;
+    if (tag === '1') {
+      entitySwitchFunction(businessesRating, index, tag);
+    } else if (tag === '2') {
+      entitySwitchFunction(businessesCount, index, tag);
     }
-    $myListView.replaceChildren($ulCount);
+  }
+});
+
+const $addReviewsPage = document.querySelector(
+  'div[data-add-reviews="add-reviews-page"]',
+) as HTMLDivElement;
+if (!$addReviewsPage) {
+  throw new Error('$addReviewsPage query failed');
+}
+
+const $addReviewImg = document.querySelector(
+  'div[data-add-reviews="add-reviews-page"] img',
+) as HTMLImageElement;
+if (!$addReviewImg) {
+  throw new Error('$addReviewImg query failed');
+}
+
+const $addReviewName = document.querySelector(
+  'div[data-add-reviews="add-reviews-page"] .business-name',
+) as HTMLImageElement;
+if (!$addReviewName) {
+  throw new Error('$addReviewName query failed');
+}
+
+$businessProfile.addEventListener('click', (event: Event) => {
+  const $eventTarget = event.target as HTMLElement;
+  if ($eventTarget.matches('button')) {
+    $businessProfile.style.display = 'none';
+    $landingPage.style.display = 'none';
+    $entitiesView.style.display = 'none';
+    $addReviewsPage.style.display = 'block';
+    const index = $eventTarget.dataset.index;
+    const tag = $eventTarget.dataset.tag;
+    if (tag === '1') {
+      const entity = businessesRating[Number(index)];
+      $addReviewImg.src = entity.image_url;
+      $addReviewName.textContent = entity.name;
+    } else if (tag === '2') {
+      const entity = businessesCount[Number(index)];
+      $addReviewImg.src = entity.image_url;
+      $addReviewName.textContent = entity.name;
+    }
   }
 });

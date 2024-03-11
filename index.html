@@ -39,9 +39,9 @@
           <div class="row">
             <div class="searchBar column-full">
               <div class="businessIntro"></div>
-              <div>
+              <div id="rated-or-viewed">
                 <select id="ratedOrViewed" name="ratedOrViewed">
-                  <option value="topRated">Top Rated</option>
+                  <option value="topRated" selected>Top Rated</option>
                   <option value="topViewed">Top Viewed</option>
                 </select>
               </div>
@@ -54,19 +54,33 @@
 
         <div data-business-profile="businessProfile">
           <div class="title">Business Profile</div>
-          <div class="entity">
-            <div class="column-full column-half">
-              <img src="images/test.png" alt="business image" />
+        </div>
+
+        <div data-add-reviews="add-reviews-page">
+          <div class="row column-full">
+            <div class="add-reviews-title column-full">Add Review</div>
+            <div class="column-full column-half" id="image-and-name">
+              <div class="add-reviews-image column-full">
+                <img src="images/test.png" alt="business images" />
+              </div>
+              <div class="column-full business-name">Seoul Haus</div>
             </div>
-            <div class="column-full column-half">
-              <div>Business Name</div>
-              <div>rating: 4.6</div>
-              <div>reviews: 190</div>
-              <div><address>11111, Chino Hills, CA, 91709</address></div>
-              <div>phone: 101-111-1111</div>
-              <div>isOpen: yes</div>
-              <div>alcohol: yes</div>
-              <div>yes</div>
+            <div class="add-reviews-form column-full column-half">
+              <form>
+                <div>
+                  <label for="title" class="for-title">Title: </label>
+                </div>
+                <div><input type="text" id="title" name="title" /></div>
+                <div>
+                  <label for="rating" class="for-rating">Rating: </label>
+                </div>
+                <div><input type="text" id="rating" name="rating" /></div>
+                <div>
+                  <label for="message" class="for-message">Message: </label>
+                </div>
+                <div><textarea id="message" name="message"></textarea></div>
+                <div><button>Submit</button></div>
+              </form>
             </div>
           </div>
         </div>

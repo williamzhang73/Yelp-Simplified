@@ -31,7 +31,7 @@ header img {
 }
 
 .container {
-  width: 90%;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -62,9 +62,17 @@ header img {
 }
 
 .container img {
-  width: 100%;
+  max-width: 400px;
   height: 254px;
   object-fit: cover;
+}
+
+div[data-business-profile='businessProfile'] img {
+  width: 100%;
+}
+
+div[data-add-reviews='add-reviews-page'] img {
+  width: 100%;
 }
 
 div[data-top-rated='entitiesView'] ul img {
@@ -74,11 +82,12 @@ div[data-top-rated='entitiesView'] ul img {
 }
 
 .container .businessEntity img {
-  width: 100%;
+  max-width: 400px;
 }
 
 ul {
   list-style-type: none;
+  padding-left: 26px;
 }
 
 div[data-top-rated='entitiesView'] {
@@ -110,22 +119,120 @@ li {
 }
 
 div[data-business-profile='businessProfile'] {
-  display: block;
+  display: none;
+  padding-left: 3%;
+  padding-right: 3%;
 }
+
+/* div[data-business-profile='businessProfile'] .row + div {
+  text-align: center;
+} */
 
 div[data-business-profile='businessProfile'] .title {
   font-size: 1.3rem;
   padding-top: 13px;
   padding-bottom: 13px;
+  text-align: center;
 }
 
 div[data-business-profile='businessProfile'] .entity {
   display: flex;
   flex-wrap: wrap;
+  padding-left: 9%;
+  padding-right: 9%;
+}
+
+div[data-business-profile='businessProfile'] #add-reviews {
+  padding-top: 43px;
+  text-align: center;
+}
+
+div[data-add-reviews='add-reviews-page'] .business-name {
+  font-size: 1.3rem;
+}
+
+div[data-business-profile='businessProfile'] .business-detail {
+  /*   display: flex; */
+
+  /*   justify-content: center;
+  align-items: center; */
+}
+
+div[data-business-profile='businessProfile'] .business-detail .business-name {
+  font-size: 1.3rem;
+  font-weight: 200;
 }
 
 div[data-landing-page='landingPage'] {
+  display: block;
+}
+
+div[data-add-reviews='add-reviews-page'] {
+  padding-right: 9%;
+  padding-left: 9%;
   display: none;
+  text-align: center;
+}
+
+div[data-add-reviews='add-reviews-page'] .add-reviews-title {
+  font-size: 1.3rem;
+  padding-bottom: 21px;
+}
+
+#image-and-name {
+  height: 314px;
+}
+
+div[data-add-reviews='add-reviews-page'] .add-reviews-form {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div[data-add-reviews='add-reviews-page'] .for-title {
+  position: relative;
+  right: 33%;
+}
+
+div[data-add-reviews='add-reviews-page'] #title {
+  width: 80%;
+}
+
+div[data-add-reviews='add-reviews-page'] #rating {
+  width: 80%;
+}
+
+div[data-add-reviews='add-reviews-page'] .for-rating {
+  position: relative;
+  right: 30%;
+}
+
+div[data-add-reviews='add-reviews-page'] .for-message {
+  position: relative;
+  right: 27%;
+}
+
+div[data-add-reviews='add-reviews-page'] #message {
+  width: 80%;
+}
+
+div[data-add-reviews='add-reviews-page'] button {
+  position: relative;
+  left: 30%;
+}
+
+div[data-add-reviews='add-reviews-page'] form {
+  background-color: rgb(217, 217, 217);
+  border: 1px solid black;
+  max-width: 400px;
+  min-width: 350px;
+  height: 314px;
+  width: 62vw;
+}
+
+div[data-add-reviews='add-reviews-page'] .add-reviews {
+  text-align: center;
 }
 
 @media screen and (width >= 756px) {
