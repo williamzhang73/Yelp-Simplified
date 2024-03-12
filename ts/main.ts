@@ -1,6 +1,31 @@
 interface FormElements extends HTMLFormControlsCollection {
   cityInput: HTMLInputElement;
 }
+interface Entity {
+  url: string;
+  name: string;
+  rating: string;
+  review: string;
+  address: string;
+  phone: string;
+  isClosed: string;
+  delivery: string;
+}
+
+interface FormElements extends HTMLFormControlsCollection {
+  title: HTMLInputElement;
+  rating: HTMLInputElement;
+  message: HTMLTextAreaElement;
+}
+interface ReviewEntity {
+  id: number;
+  businessName: string;
+  businessTag: string;
+  businessIndex: string;
+  ratingValue: string;
+  titleValue: string;
+  messageValue: string;
+}
 const apiKey =
   'PFI4az7sB4tUQKWVne-hKBAO_XQ22IouMx4zpOiFSrgEo0H6KZG6ktXa9goetNurD52ebqnYtYOffXVRYaXbITx_KAzZGPElZrHyOJnKbrfO9BKontBsKsrlOivmZXYx';
 
@@ -21,47 +46,38 @@ async function getRequest(targetUrl: string): Promise<any> {
     throw new Error('ThrowError: data fetch failed.');
   }
 }
-interface Entity {
-  url: string;
-  name: string;
-  rating: string;
-  review: string;
-  address: string;
-  phone: string;
-  isClosed: string;
-  delivery: string;
-}
+
 function createEntity(entity: Entity, index: number, tag: string): HTMLElement {
-  const $divEntity = document.createElement('div') as HTMLDivElement;
+  const $divEntity = document.createElement('div');
   $divEntity.className = 'row';
-  const $divImage = document.createElement('div') as HTMLDivElement;
+  const $divImage = document.createElement('div');
   $divImage.className = 'column-full column-half';
-  const $img = document.createElement('img') as HTMLImageElement;
+  const $img = document.createElement('img');
   $img.src = entity.url;
   $img.alt = 'business image';
-  const $divDetails = document.createElement('div') as HTMLDivElement;
+  const $divDetails = document.createElement('div');
   $divDetails.className = 'business-detail column-full column-half';
 
-  const $divName = document.createElement('div') as HTMLDivElement;
+  const $divName = document.createElement('div');
   $divName.textContent = `${entity.name}`;
   $divName.className = 'business-name';
-  const $divRating = document.createElement('div') as HTMLDivElement;
+  const $divRating = document.createElement('div');
   $divRating.textContent = `Rating: ${entity.rating}`;
-  const $divReview = document.createElement('div') as HTMLDivElement;
+  const $divReview = document.createElement('div');
   $divReview.textContent = `Review counts: ${entity.review}`;
-  const $divAddress = document.createElement('div') as HTMLDivElement;
+  const $divAddress = document.createElement('div');
   $divAddress.textContent = `Address: ${entity.address}`;
-  const $divPhone = document.createElement('div') as HTMLDivElement;
+  const $divPhone = document.createElement('div');
   $divPhone.textContent = `Phone: ${entity.phone}`;
-  const $divIsClosed = document.createElement('div') as HTMLDivElement;
+  const $divIsClosed = document.createElement('div');
   $divIsClosed.textContent =
     entity.isClosed === 'false' ? 'Status: closed' : 'Status: open';
-  const $divDelivery = document.createElement('div') as HTMLDivElement;
+  const $divDelivery = document.createElement('div');
   $divDelivery.textContent = `Delivery: ${entity.delivery}`;
 
-  const $divButton = document.createElement('div') as HTMLDivElement;
+  const $divButton = document.createElement('div');
   $divButton.className = 'column-full';
-  const $button = document.createElement('button') as HTMLButtonElement;
+  const $button = document.createElement('button');
   $divButton.id = 'add-reviews';
   $button.textContent = 'Add Reviews';
   $button.dataset.index = index.toString();
@@ -327,11 +343,6 @@ if (!$addReviewName) {
   throw new Error('$addReviewName query failed');
 }
 
-interface FormElements extends HTMLFormControlsCollection {
-  title: HTMLInputElement;
-  rating: HTMLInputElement;
-  message: HTMLTextAreaElement;
-}
 const $addReviewForm = document.getElementById(
   'add-review-form',
 ) as HTMLFormElement;
@@ -359,15 +370,6 @@ $businessProfile.addEventListener('click', (event: Event) => {
     $addReviewForm.dataset.tag = tag;
   }
 });
-interface ReviewEntity {
-  id: number;
-  businessName: string;
-  businessTag: string;
-  businessIndex: string;
-  ratingValue: string;
-  titleValue: string;
-  messageValue: string;
-}
 
 const $myReviewsPage = document.querySelector(
   'div[data-reviews-page="my-reviews-page"]',
@@ -417,21 +419,21 @@ $addReviewForm.addEventListener('submit', (event: Event) => {
 });
 
 function createReviewsDOMTree(entity: ReviewEntity): HTMLDivElement {
-  const $mainDiv = document.createElement('div') as HTMLDivElement;
+  const $mainDiv = document.createElement('div');
   $mainDiv.className = 'my-review column-full column-half';
-  const $divId = document.createElement('div') as HTMLDivElement;
+  const $divId = document.createElement('div');
   $divId.textContent = `Review ID: ${entity.id.toString()}`;
-  const $divName = document.createElement('div') as HTMLDivElement;
+  const $divName = document.createElement('div');
   $divName.textContent = `Business Name: ${entity.businessName}`;
-  const $divTitle = document.createElement('div') as HTMLDivElement;
+  const $divTitle = document.createElement('div');
   $divTitle.textContent = `Title: ${entity.titleValue}`;
-  const $divRating = document.createElement('div') as HTMLDivElement;
+  const $divRating = document.createElement('div');
   $divRating.textContent = `Rating: ${entity.ratingValue}`;
-  const $divMessage = document.createElement('div') as HTMLDivElement;
+  const $divMessage = document.createElement('div');
   $divMessage.textContent = `Message: ${entity.messageValue}`;
-  const $divbutton = document.createElement('div') as HTMLDivElement;
+  const $divbutton = document.createElement('div');
   $divbutton.className = 'update-button';
-  const $button = document.createElement('button') as HTMLButtonElement;
+  const $button = document.createElement('button');
   $button.textContent = 'Update';
   $divbutton.append($button);
   $mainDiv.append(
