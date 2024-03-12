@@ -82,22 +82,6 @@ function createEntity(entity: Entity, index: number, tag: string): HTMLElement {
   return $divEntity;
 }
 
-/* function createSelectElement(): HTMLSelectElement {
-  const $select = document.createElement('select') as HTMLSelectElement;
-  $select.id = 'ratedOrViewed';
-  $select.name = 'ratedOrViewed';
-  const $option1 = document.createElement('option') as HTMLOptionElement;
-  $option1.value = 'topRated';
-  $option1.selected = true;
-  $option1.textContent = 'Top Rated';
-  const $option2 = document.createElement('option') as HTMLOptionElement;
-  $option2.value = 'topViewed';
-  $option2.textContent = 'Top viewed';
-
-  $select.append($option1, $option2);
-  return $select;
-} */
-
 function createLiElement(
   tag: number,
   imageUrl: string,
@@ -236,7 +220,6 @@ function appendLi(tag: number, businesses: any): void {
     const businessName = businessEntity.name;
     const ratingOrCount =
       tag === 1 ? businessEntity.rating : businessEntity.review_count;
-    /*     console.log('business Rating: ', businessEntity.rating); */
     const index = i;
     const $liElement = createLiElement(
       tag,
@@ -406,7 +389,6 @@ $addReviewForm.addEventListener('submit', (event: Event) => {
   const messageValue = $formElements.message.value;
   const index = $addReviewForm.dataset.index as string;
   const tag = $addReviewForm.dataset.tag as string;
-  /*   console.log("nextEntityId: ", data.nextEntityId); */
   const review: ReviewEntity = {
     businessName:
       tag === '1'
