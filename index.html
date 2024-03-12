@@ -66,22 +66,51 @@
               <div class="column-full business-name">Seoul Haus</div>
             </div>
             <div class="add-reviews-form column-full column-half">
-              <form>
+              <form id="add-review-form">
                 <div>
                   <label for="title" class="for-title">Title: </label>
                 </div>
-                <div><input type="text" id="title" name="title" /></div>
+                <div>
+                  <input type="text" id="title" name="title" required />
+                </div>
                 <div>
                   <label for="rating" class="for-rating">Rating: </label>
                 </div>
-                <div><input type="text" id="rating" name="rating" /></div>
+                <div>
+                  <input type="text" id="rating" name="rating" required />
+                </div>
                 <div>
                   <label for="message" class="for-message">Message: </label>
                 </div>
-                <div><textarea id="message" name="message"></textarea></div>
+                <div>
+                  <textarea id="message" name="message" required></textarea>
+                </div>
                 <div><button>Submit</button></div>
               </form>
             </div>
+          </div>
+        </div>
+
+        <div data-reviews-page="my-reviews-page">
+          <div class="row">
+            <div class="my-section column-full">My Reviews</div>
+
+            <!-- <div class="my-review column-full column-half">
+              <div>Review ID: 1</div>
+              <div>Name:</div>
+              <div>Title:</div>
+              <div>Rating:</div>
+              <div>Message:</div>
+              <div class="update-button"><button >Update</button></div>
+            </div>
+            <div class="my-review column-full column-half">
+              <div>Review ID: 1</div>
+              <div>Name:</div>
+              <div>Title:</div>
+              <div>Rating:</div>
+              <div>Message:</div>
+              <div class="update-button"><button>Update</button></div>
+            </div> -->
           </div>
         </div>
       </div>

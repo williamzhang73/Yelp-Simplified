@@ -216,6 +216,7 @@ $logo.addEventListener('click', () => {
   $entitiesView.style.display = 'none';
   $businessProfile.style.display = 'none';
   $addReviewsPage.style.display = 'none';
+  $myReviewsPage.style.display = 'none';
 });
 
 const $sortByRatedOrViewed = document.getElementById(
@@ -311,6 +312,7 @@ $ul.addEventListener('click', (event: Event) => {
     $landingPage.style.display = 'none';
     $entitiesView.style.display = 'none';
     $businessProfile.style.display = 'block';
+    $myReviewsPage.style.display = 'none';
     const index = Number($eventTarget.dataset.index);
     const tag = $eventTarget.dataset.tag;
     if (tag === '1') {
@@ -342,13 +344,23 @@ if (!$addReviewName) {
   throw new Error('$addReviewName query failed');
 }
 
+interface FormElements extends HTMLFormControlsCollection {
+  title: HTMLInputElement;
+  rating: HTMLInputElement;
+  message: HTMLTextAreaElement;
+}
+const $addReviewForm = document.getElementById(
+  'add-review-form',
+) as HTMLFormElement;
 $businessProfile.addEventListener('click', (event: Event) => {
   const $eventTarget = event.target as HTMLElement;
   if ($eventTarget.matches('button')) {
+    event.preventDefault();
     $businessProfile.style.display = 'none';
     $landingPage.style.display = 'none';
     $entitiesView.style.display = 'none';
     $addReviewsPage.style.display = 'block';
+    $myReviewsPage.style.display = 'none';
     const index = $eventTarget.dataset.index;
     const tag = $eventTarget.dataset.tag;
     if (tag === '1') {
@@ -360,5 +372,93 @@ $businessProfile.addEventListener('click', (event: Event) => {
       $addReviewImg.src = entity.image_url;
       $addReviewName.textContent = entity.name;
     }
+    $addReviewForm.dataset.index = index;
+    $addReviewForm.dataset.tag = tag;
   }
 });
+interface ReviewEntity {
+  id: number;
+  businessName: string;
+  businessTag: string;
+  businessIndex: string;
+  ratingValue: string;
+  titleValue: string;
+  messageValue: string;
+}
+
+const $myReviewsPage = document.querySelector(
+  'div[data-reviews-page="my-reviews-page"]',
+) as HTMLDivElement;
+if (!$myReviewsPage) {
+  throw new Error('$myReviewsPage query failed');
+}
+const $myReviews = document.querySelector(
+  'div[data-reviews-page="my-reviews-page"] .row',
+) as HTMLDivElement;
+if (!$myReviews) {
+  throw new Error('$myReviews query failed');
+}
+$addReviewForm.addEventListener('submit', (event: Event) => {
+  event.preventDefault();
+  const $formElements = $addReviewForm.elements as FormElements;
+  const titleValue = $formElements.title.value;
+  const ratingValue = $formElements.rating.value;
+  const messageValue = $formElements.message.value;
+  const index = $addReviewForm.dataset.index as string;
+  const tag = $addReviewForm.dataset.tag as string;
+  /*   console.log("nextEntityId: ", data.nextEntityId); */
+  const review: ReviewEntity = {
+    businessName:
+      tag === '1'
+        ? businessesRating[Number(index)].name
+        : businessesCount[Number(index)].name,
+    businessIndex: index,
+    businessTag: tag,
+    ratingValue,
+    titleValue,
+    messageValue,
+    id: data.nextEntityId,
+  };
+  data.reviews.unshift(review);
+  data.nextEntityId++;
+  const Reviews = data.reviews;
+  for (const review of Reviews) {
+    const $divReview = createReviewsDOMTree(review);
+    $myReviews.append($divReview);
+  }
+  $businessProfile.style.display = 'none';
+  $landingPage.style.display = 'none';
+  $entitiesView.style.display = 'none';
+  $myReviewsPage.style.display = 'block';
+  $addReviewsPage.style.display = 'none';
+  $addReviewForm.reset();
+});
+
+function createReviewsDOMTree(entity: ReviewEntity): HTMLDivElement {
+  const $mainDiv = document.createElement('div') as HTMLDivElement;
+  $mainDiv.className = 'my-review column-full column-half';
+  const $divId = document.createElement('div') as HTMLDivElement;
+  $divId.textContent = `Review ID: ${entity.id.toString()}`;
+  const $divName = document.createElement('div') as HTMLDivElement;
+  $divName.textContent = `Business Name: ${entity.businessName}`;
+  const $divTitle = document.createElement('div') as HTMLDivElement;
+  $divTitle.textContent = `Title: ${entity.titleValue}`;
+  const $divRating = document.createElement('div') as HTMLDivElement;
+  $divRating.textContent = `Rating: ${entity.ratingValue}`;
+  const $divMessage = document.createElement('div') as HTMLDivElement;
+  $divMessage.textContent = `Message: ${entity.messageValue}`;
+  const $divbutton = document.createElement('div') as HTMLDivElement;
+  $divbutton.className = 'update-button';
+  const $button = document.createElement('button') as HTMLButtonElement;
+  $button.textContent = 'Update';
+  $divbutton.append($button);
+  $mainDiv.append(
+    $divId,
+    $divName,
+    $divTitle,
+    $divRating,
+    $divMessage,
+    $divbutton,
+  );
+  return $mainDiv;
+}
