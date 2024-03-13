@@ -110,9 +110,9 @@ div[data-top-rated='entitiesView'] {
   height: 52px;
 }
 
-.searchForm .searchButton {
+/* .searchForm .searchButton {
   border-radius: 7px;
-}
+} */
 
 li {
   padding-bottom: 18px;
@@ -259,8 +259,36 @@ div[data-reviews-page='my-reviews-page'] .my-review {
 }
 
 div[data-reviews-page='my-reviews-page'] .update-button {
-  text-align: center;
+  display: flex;
+  justify-content: space-around;
+}
+
+.modal-action {
+  margin-top: 27px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.dismiss-modal {
+  background-color: green;
+}
+
+.confirm-modal {
+  background-color: red;
+}
+
+button {
+  border-radius: 8px;
   margin-top: 29px;
+}
+
+button[data-feature='delete'] {
+  background-color: red;
+}
+
+button[data-feature='update'] {
+  background-color: green;
 }
 
 @media screen and (width >= 756px) {

@@ -356,6 +356,7 @@ $addReviewForm.addEventListener('submit', (event) => {
     const $divReview = createReviewsDOMTree(review);
     $myReviews.prepend($divReview);
   } else {
+    console.log('data will be updated');
     const id = Number($addOrUpdateButton.dataset.id);
     review.id = id;
     for (let i = 0; i < data.reviews.length; i++) {
@@ -408,10 +409,16 @@ function createReviewsDOMTree(entity) {
   $divMessage.textContent = `Message: ${entity.messageValue}`;
   const $divbutton = document.createElement('div');
   $divbutton.className = 'update-button';
-  const $button = document.createElement('button');
-  $button.textContent = 'Update';
-  $button.dataset.reviewId = entity.id.toString();
-  $divbutton.append($button);
+  const $updateButton = document.createElement('button');
+  $updateButton.textContent = 'Update';
+  $updateButton.dataset.feature = 'update';
+  $updateButton.dataset.reviewId = entity.id.toString();
+  $divbutton.append($updateButton);
+  const $deleteButton = document.createElement('button');
+  $deleteButton.textContent = 'Delete';
+  $deleteButton.dataset.feature = 'delete';
+  $deleteButton.dataset.reviewId = entity.id.toString();
+  $divbutton.append($deleteButton);
   $mainDiv.append(
     $divId,
     $divName,
@@ -433,7 +440,10 @@ const $addReviewsBusinessName = document.querySelector(
 );
 $myReviewsPage.addEventListener('click', (event) => {
   const $eventTarget = event.target;
-  if ($eventTarget.matches('button')) {
+  if (
+    $eventTarget.matches('button') &&
+    $eventTarget.dataset.feature === 'update'
+  ) {
     $businessProfile.style.display = 'none';
     $landingPage.style.display = 'none';
     $entitiesView.style.display = 'none';
@@ -447,6 +457,8 @@ $myReviewsPage.addEventListener('click', (event) => {
         break;
       }
     }
+    $addReviewForm.dataset.index = reviewEditing?.businessIndex;
+    $addReviewForm.dataset.tag = reviewEditing?.businessTag;
     if (reviewEditing !== null) {
       $addReviewsTitle.textContent = 'Update Review';
       $reviewTitle.value = reviewEditing.titleValue;
@@ -483,3 +495,55 @@ $addReviewsPage.addEventListener('click', (event) => {
     $addReviewsPage.style.display = 'none';
   }
 });
+const $dialog = document.querySelector('dialog');
+if (!$dialog) {
+  throw new Error('$dialog query failed ');
+}
+$myReviewsPage.addEventListener('click', (event) => {
+  const $eventTarget = event.target;
+  if (
+    $eventTarget.matches('button') &&
+    $eventTarget.dataset.feature === 'delete'
+  ) {
+    $confirmDialog.dataset.id = $eventTarget.dataset.reviewId;
+    $dialog.showModal();
+  }
+});
+$dialog.addEventListener('click', (event) => {
+  const $eventTarget = event.target;
+  if (
+    $eventTarget.matches('button') &&
+    $eventTarget.dataset.feature === 'cancel'
+  ) {
+    $dialog.close();
+  } else if (
+    $eventTarget.matches('button') &&
+    $eventTarget.dataset.feature === 'confirm'
+  ) {
+    const reviewId = $eventTarget.dataset.id;
+    const length = data.reviews.length;
+    for (let i = 0; i < length; i++) {
+      if (data.reviews[i].id === Number(reviewId)) {
+        data.reviews.splice(i, 1);
+        break;
+      }
+    }
+    const $myReviewsElement = document.querySelectorAll(
+      "div[data-reviews-page='my-reviews-page'] .my-review",
+    );
+    if (!$myReviewsElement) {
+      throw new Error('$myReviewsElement query failed');
+    }
+    for (const $myReview of $myReviewsElement) {
+      if ($myReview.dataset.id === reviewId) {
+        $myReview.remove();
+      }
+    }
+    $dialog.close();
+  }
+});
+const $cancelDialog = document.querySelector('.dismiss-modal');
+const $confirmDialog = document.querySelector('.confirm-modal');
+if (!$cancelDialog || !$confirmDialog) {
+  throw new Error('$cancelDialog or $confirmDialog query failed');
+}
