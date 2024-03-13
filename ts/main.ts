@@ -439,7 +439,6 @@ $addReviewForm.addEventListener('submit', (event: Event) => {
       "div[data-reviews-page='my-reviews-page'] .my-review",
     ) as NodeListOf<HTMLElement>;
 
-    console.log('$myReviewsElement: ', $myReviewsElement);
     if (!$myReviewsElement) {
       throw new Error('$myReviewsElement query failed');
     }
