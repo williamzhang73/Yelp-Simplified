@@ -434,8 +434,10 @@ $addReviewForm.addEventListener('submit', (event: Event) => {
     data.nextEntityId++;
     const $divReview = createReviewsDOMTree(review);
     $myReviews.prepend($divReview);
+    if (data.reviews.length !== 0) {
+      $noEntryMessage.textContent = '';
+    }
   } else {
-    console.log('data will be updated');
     const id = Number($addOrUpdateButton.dataset.id);
     review.id = id;
     for (let i = 0; i < data.reviews.length; i++) {
@@ -634,10 +636,17 @@ $dialog.addEventListener('click', (event: Event) => {
         $myReview.remove();
       }
     }
+
+    if (data.reviews.length === 0) {
+      $noEntryMessage.textContent = 'no entry exists';
+    }
+
     $dialog.close();
   }
 });
-
+const $noEntryMessage = document.getElementById(
+  'no-entry-message',
+) as HTMLDivElement;
 const $cancelDialog = document.querySelector(
   '.dismiss-modal',
 ) as HTMLButtonElement;
