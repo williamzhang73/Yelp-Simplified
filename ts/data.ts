@@ -2,11 +2,13 @@
 interface Data {
   reviews: ReviewEntity[];
   nextEntityId: number;
+  editing: null | ReviewEntity;
 }
 
 let data: Data = {
   reviews: [],
   nextEntityId: 1,
+  editing: null,
 };
 
 window.addEventListener('beforeunload', () => {
