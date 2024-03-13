@@ -147,6 +147,11 @@ div[data-add-reviews='add-reviews-page'] .business-name {
   font-size: 1.3rem;
 }
 
+div[data-business-profile='businessProfile'] .my-reviews {
+  text-align: center;
+  margin-top: 57px;
+}
+
 div[data-business-profile='businessProfile'] .business-detail .business-name {
   font-size: 1.3rem;
   font-weight: 200;
@@ -166,6 +171,11 @@ div[data-add-reviews='add-reviews-page'] {
 div[data-add-reviews='add-reviews-page'] .add-reviews-title {
   font-size: 1.3rem;
   padding-bottom: 21px;
+}
+
+div[data-add-reviews='add-reviews-page'] .my-reviews {
+  text-align: center;
+  margin-top: 58px;
 }
 
 #image-and-name {
@@ -206,7 +216,7 @@ div[data-add-reviews='add-reviews-page'] #message {
   width: 80%;
 }
 
-div[data-add-reviews='add-reviews-page'] button {
+div[data-add-reviews='add-reviews-page'] .addOrUpdateButton {
   position: relative;
   left: 30%;
 }
@@ -239,6 +249,10 @@ div[data-reviews-page='my-reviews-page'] .my-section {
   padding-top: 13px;
   padding-bottom: 13px;
 }
+
+/* #view-reviews {
+  text-align: center;
+} */
 
 div[data-reviews-page='my-reviews-page'] .my-review {
   max-width: 400px;
