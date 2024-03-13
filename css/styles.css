@@ -250,10 +250,6 @@ div[data-reviews-page='my-reviews-page'] .my-section {
   padding-bottom: 13px;
 }
 
-/* #view-reviews {
-  text-align: center;
-} */
-
 div[data-reviews-page='my-reviews-page'] .my-review {
   max-width: 400px;
   height: 400px;
