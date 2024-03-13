@@ -2,6 +2,7 @@
 let data = {
   reviews: [],
   nextEntityId: 1,
+  editing: null,
 };
 window.addEventListener('beforeunload', () => {
   const serializedData = JSON.stringify(data);

@@ -46,14 +46,20 @@ function createEntity(entity, index, tag) {
   $divDelivery.textContent = `Delivery: ${entity.delivery}`;
   const $divButton = document.createElement('div');
   $divButton.className = 'column-full';
-  const $button = document.createElement('button');
+  const $addButton = document.createElement('button');
   $divButton.id = 'add-reviews';
-  $button.textContent = 'Add Reviews';
-  $button.dataset.index = index.toString();
-  $button.dataset.tag = tag;
-  $divButton.append($button);
+  $addButton.textContent = 'Add Reviews';
+  const $divButton1 = document.createElement('div');
+  $divButton1.className = 'column-full my-reviews';
+  const $viewReviewsButton = document.createElement('button');
+  $viewReviewsButton.id = 'view-reviews';
+  $viewReviewsButton.textContent = 'My Reviews';
+  $addButton.dataset.index = index.toString();
+  $addButton.dataset.tag = tag;
+  $divButton.append($addButton);
+  $divButton1.append($viewReviewsButton);
   $divImage.append($img);
-  $divEntity.append($divImage, $divDetails, $divButton);
+  $divEntity.append($divImage, $divDetails, $divButton, $divButton1);
   $divDetails.append(
     $divName,
     $divRating,
@@ -65,21 +71,6 @@ function createEntity(entity, index, tag) {
   );
   return $divEntity;
 }
-/* function createSelectElement(): HTMLSelectElement {
-  const $select = document.createElement('select') as HTMLSelectElement;
-  $select.id = 'ratedOrViewed';
-  $select.name = 'ratedOrViewed';
-  const $option1 = document.createElement('option') as HTMLOptionElement;
-  $option1.value = 'topRated';
-  $option1.selected = true;
-  $option1.textContent = 'Top Rated';
-  const $option2 = document.createElement('option') as HTMLOptionElement;
-  $option2.value = 'topViewed';
-  $option2.textContent = 'Top viewed';
-
-  $select.append($option1, $option2);
-  return $select;
-} */
 function createLiElement(tag, imageUrl, name, value, index) {
   const $li = document.createElement('li');
   const $div1 = document.createElement('div');
@@ -196,7 +187,6 @@ function appendLi(tag, businesses) {
     const businessName = businessEntity.name;
     const ratingOrCount =
       tag === 1 ? businessEntity.rating : businessEntity.review_count;
-    /*     console.log('business Rating: ', businessEntity.rating); */
     const index = i;
     const $liElement = createLiElement(
       tag,
@@ -292,11 +282,19 @@ if (!$addReviewName) {
   throw new Error('$addReviewName query failed');
 }
 const $addReviewForm = document.getElementById('add-review-form');
+const $addOrUpdateButton = document.getElementById('addOrUpdateButton');
 $businessProfile.addEventListener('click', (event) => {
   const $eventTarget = event.target;
   if ($eventTarget.matches('button')) {
     event.preventDefault();
+    const $addReviewForm = document.querySelector(
+      "div[data-add-reviews='add-reviews-page'] form",
+    );
+    $addReviewForm.reset();
+    data.editing = null;
+    $addReviewsTitle.textContent = 'Add Review';
     $businessProfile.style.display = 'none';
+    $addOrUpdateButton.textContent = 'Submit';
     $landingPage.style.display = 'none';
     $entitiesView.style.display = 'none';
     $addReviewsPage.style.display = 'block';
@@ -336,7 +334,6 @@ $addReviewForm.addEventListener('submit', (event) => {
   const messageValue = $formElements.message.value;
   const index = $addReviewForm.dataset.index;
   const tag = $addReviewForm.dataset.tag;
-  /*   console.log("nextEntityId: ", data.nextEntityId); */
   const review = {
     businessName:
       tag === '1'
@@ -348,13 +345,39 @@ $addReviewForm.addEventListener('submit', (event) => {
     titleValue,
     messageValue,
     id: data.nextEntityId,
+    imageUrl:
+      tag === '1'
+        ? businessesRating[Number(index)].image_url
+        : businessesCount[Number(index)].image_url,
   };
-  data.reviews.unshift(review);
-  data.nextEntityId++;
-  const Reviews = data.reviews;
-  for (const review of Reviews) {
+  if (data.editing === null) {
+    data.reviews.unshift(review);
+    data.nextEntityId++;
     const $divReview = createReviewsDOMTree(review);
-    $myReviews.append($divReview);
+    $myReviews.prepend($divReview);
+  } else {
+    const id = Number($addOrUpdateButton.dataset.id);
+    review.id = id;
+    for (let i = 0; i < data.reviews.length; i++) {
+      const myReview = data.reviews[i];
+      if (myReview.id === id) {
+        data.reviews[i] = review;
+        break;
+      }
+    }
+    const $updatedReview = createReviewsDOMTree(review);
+    const $myReviewsElement = document.querySelectorAll(
+      "div[data-reviews-page='my-reviews-page'] .my-review",
+    );
+    if (!$myReviewsElement) {
+      throw new Error('$myReviewsElement query failed');
+    }
+    for (const $myReview of $myReviewsElement) {
+      if ($myReview.dataset.id === review.id.toString()) {
+        $myReview.replaceWith($updatedReview);
+        break;
+      }
+    }
   }
   $businessProfile.style.display = 'none';
   $landingPage.style.display = 'none';
@@ -363,9 +386,16 @@ $addReviewForm.addEventListener('submit', (event) => {
   $addReviewsPage.style.display = 'none';
   $addReviewForm.reset();
 });
+document.addEventListener('DOMContentLoaded', () => {
+  for (const review of data.reviews) {
+    const $review = createReviewsDOMTree(review);
+    $myReviews.append($review);
+  }
+});
 function createReviewsDOMTree(entity) {
   const $mainDiv = document.createElement('div');
   $mainDiv.className = 'my-review column-full column-half';
+  $mainDiv.dataset.id = entity.id.toString();
   const $divId = document.createElement('div');
   $divId.textContent = `Review ID: ${entity.id.toString()}`;
   const $divName = document.createElement('div');
@@ -380,6 +410,7 @@ function createReviewsDOMTree(entity) {
   $divbutton.className = 'update-button';
   const $button = document.createElement('button');
   $button.textContent = 'Update';
+  $button.dataset.reviewId = entity.id.toString();
   $divbutton.append($button);
   $mainDiv.append(
     $divId,
@@ -391,3 +422,64 @@ function createReviewsDOMTree(entity) {
   );
   return $mainDiv;
 }
+const $addReviewsTitle = document.querySelector(
+  'div[data-add-reviews="add-reviews-page"] .add-reviews-title',
+);
+const $reviewTitle = document.getElementById('title');
+const $reviewRating = document.getElementById('rating');
+const $reviewMessage = document.getElementById('message');
+const $addReviewsBusinessName = document.querySelector(
+  'div[data-add-reviews="add-reviews-page"] .business-name',
+);
+$myReviewsPage.addEventListener('click', (event) => {
+  const $eventTarget = event.target;
+  if ($eventTarget.matches('button')) {
+    $businessProfile.style.display = 'none';
+    $landingPage.style.display = 'none';
+    $entitiesView.style.display = 'none';
+    $myReviewsPage.style.display = 'none';
+    $addReviewsPage.style.display = 'block';
+    const index = Number($eventTarget.dataset.reviewId);
+    let reviewEditing = null;
+    for (const review of data.reviews) {
+      if (review.id === index) {
+        reviewEditing = review;
+        break;
+      }
+    }
+    if (reviewEditing !== null) {
+      $addReviewsTitle.textContent = 'Update Review';
+      $reviewTitle.value = reviewEditing.titleValue;
+      $reviewRating.value = reviewEditing.ratingValue;
+      $reviewMessage.value = reviewEditing.messageValue;
+      $addReviewsBusinessName.textContent = reviewEditing.businessName;
+      $addReviewImg.src = reviewEditing.imageUrl;
+      $addOrUpdateButton.textContent = 'Update';
+      $addOrUpdateButton.dataset.id = reviewEditing.id.toString();
+      data.editing = reviewEditing;
+    }
+  }
+});
+$businessProfile.addEventListener('click', (event) => {
+  const $eventTarget = event.target;
+  if ($eventTarget.matches('button') && $eventTarget.id === 'view-reviews') {
+    $businessProfile.style.display = 'none';
+    $landingPage.style.display = 'none';
+    $entitiesView.style.display = 'none';
+    $myReviewsPage.style.display = 'block';
+    $addReviewsPage.style.display = 'none';
+  }
+});
+$addReviewsPage.addEventListener('click', (event) => {
+  const $eventTarget = event.target;
+  if (
+    $eventTarget.matches('button') &&
+    $eventTarget.dataset.myReviews === 'myReviews'
+  ) {
+    $businessProfile.style.display = 'none';
+    $landingPage.style.display = 'none';
+    $entitiesView.style.display = 'none';
+    $myReviewsPage.style.display = 'block';
+    $addReviewsPage.style.display = 'none';
+  }
+});
