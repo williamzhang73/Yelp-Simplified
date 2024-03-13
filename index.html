@@ -102,10 +102,19 @@
 
         <div data-reviews-page="my-reviews-page">
           <div class="my-section column-full">My Reviews</div>
-          <div class="row"></div>
+          <div class="row">
+            <div id="no-entry-message"></div>
+          </div>
         </div>
       </div>
     </main>
+    <dialog>
+      <h2>Do you really want delete?</h2>
+      <div class="modal-action">
+        <button class="dismiss-modal" data-feature="cancel">Cancel</button>
+        <button class="confirm-modal" data-feature="confirm">Confirm</button>
+      </div>
+    </dialog>
     <script src="js/data.js"></script>
     <script src="js/main.js"></script>
   </body>
