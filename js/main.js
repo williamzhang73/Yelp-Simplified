@@ -126,6 +126,10 @@ let businessesRating = [];
 let businessesCount = [];
 $form.addEventListener('submit', async (event) => {
   event.preventDefault();
+  if (data.reviews.length === 0) {
+    $noEntryMessage.textContent = 'no entry exists';
+  }
+  $topRated.selected = true;
   const $formElements = $form.elements;
   const $input = $formElements.cityInput;
   let inputValue = $input.value;
@@ -173,9 +177,10 @@ $logo.addEventListener('click', () => {
   $addReviewsPage.style.display = 'none';
   $myReviewsPage.style.display = 'none';
 });
-const $sortByRatedOrViewed = document.getElementById('ratedOrViewed');
-if (!$sortByRatedOrViewed) {
-  throw new Error('$sortByRatedOrViewed query failed');
+const $sortByRatedOrViewed = document.getElementById('rate-or-view');
+const $topRated = document.getElementById('top-rated');
+if (!$sortByRatedOrViewed || !$topRated) {
+  throw new Error('$sortByRatedOrViewed or $topRated query failed');
 }
 function appendLi(tag, businesses) {
   $landingPage.style.display = 'none';
