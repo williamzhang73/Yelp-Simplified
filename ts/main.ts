@@ -176,8 +176,13 @@ if (!$selectParent) {
 
 let businessesRating: any[] = [];
 let businessesCount: any[] = [];
+
 $form.addEventListener('submit', async (event: Event) => {
   event.preventDefault();
+  if (data.reviews.length === 0) {
+    $noEntryMessage.textContent = 'no entry exists';
+  }
+  $topRated.selected = true;
   const $formElements = $form.elements as FormElements;
   const $input = $formElements.cityInput;
   let inputValue = $input.value;
@@ -190,7 +195,6 @@ $form.addEventListener('submit', async (event: Event) => {
   businessesRating = await getRequest(ratingUrl);
   businessesCount = await getRequest(countUrl);
   const $ulRated = document.createElement('ul') as HTMLUListElement;
-
   for (let i = 0; i < businessesRating.length; i++) {
     const businessEntity = businessesRating[i];
     const imageUrl = businessEntity.image_url;
@@ -229,10 +233,11 @@ $logo.addEventListener('click', () => {
 });
 
 const $sortByRatedOrViewed = document.getElementById(
-  'ratedOrViewed',
+  'rate-or-view',
 ) as HTMLSelectElement;
-if (!$sortByRatedOrViewed) {
-  throw new Error('$sortByRatedOrViewed query failed');
+const $topRated = document.getElementById('top-rated') as HTMLOptionElement;
+if (!$sortByRatedOrViewed || !$topRated) {
+  throw new Error('$sortByRatedOrViewed or $topRated query failed');
 }
 function appendLi(tag: number, businesses: any): void {
   $landingPage.style.display = 'none';
